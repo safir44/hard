@@ -39,13 +39,18 @@ jobs:
           git config user.email "safiratasyaaaa@gmail.com"
           git config user.name "safir44"
 
-      - name: Prepare Commit
+      - name: Prepare and Commit Changes
         run: |
-          commit_messages=("Update: ⏰" "Refresh: 🔄" "Renew: 🌟" "Revise: 📝" "Amend: 🛠" "Adjust: 🔧" "Change: 📈" "Modify: 🖊" "Transform: 🌀" "Revamp: 🌈")
-          random_msg=${commit_messages[$RANDOM % ${#commit_messages[@]}]}
+          declare -A files_and_msgs
+          files_and_msgs["TIMESTAMP.txt"]="Timestamp update: 🕒"
+          files_and_msgs["Wayah.txt"]="Wayah update: 🌟"
+          files_and_msgs["Waktu.txt"]="Waktu update: 🔄"
+          files_and_msgs["Wektu.txt"]="Wektu update: 📈"
 
-          git add TIMESTAMP.txt Wayah.txt Waktu.txt Wektu.txt
-          git commit -m "$random_msg - $current_time" || echo "No changes to commit."
+          for file in "${!files_and_msgs[@]}"; do
+            git add "$file"
+            git commit -m "${files_and_msgs[$file]} - $(date '+%Y-%m-%d %H:%M:%S')" || echo "No changes to commit for $file."
+          done
 
       - name: GitHub Push
         uses: ad-m/github-push-action@v0.6.0
